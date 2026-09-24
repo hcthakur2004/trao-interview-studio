@@ -12,7 +12,7 @@ import {
   type Research,
   type Trace,
 } from './contracts';
-import { allocateSchedule, coverage } from './deterministic';
+import { allocateSchedule, cardIdForQuestion, coverage } from './deterministic';
 import { GeminiModel, PipelineError, type Model } from './llm';
 import { crawlCompany, searchDiscussion } from './retrieval';
 
@@ -228,7 +228,7 @@ export async function runPipeline(raw: InputCase, options: PipelineOptions = {})
   await log('flashcards', 'Creating review cards from the generated questions');
   // Deterministic derivation avoids an additional quota-consuming call and keeps cards grounded.
   const flashcards = questions.map((q) => ({
-    id: `f_${hash(q.id)}`,
+    id: cardIdForQuestion(q.id),
     front: q.prompt,
     back: q.answer_outline,
     requirement_ids: q.requirement_ids,

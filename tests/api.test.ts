@@ -133,6 +133,18 @@ describe('authentication and ownership', () => {
     const after = (await request(app).get('/api/kits/example').set('Cookie', cookie)).body;
     expect(after.kit.company_brief.summary).toBe('A concurrent user edit that must survive.');
   });
+  it('marks changed flashcards as protected even when the client omits the edited flag', async () => {
+    const before = (await request(app).get('/api/kits/example').set('Cookie', cookie)).body;
+    before.kit.flashcards[0].front = 'My own study card';
+    before.kit.flashcards[0].meta = { origin: 'generated', edited: false, pinned: false };
+    const saved = await request(app)
+      .put('/api/kits/example')
+      .set('Origin', origin)
+      .set('Cookie', cookie)
+      .send({ revision: before.revision, kit: before.kit });
+    expect(saved.status).toBe(200);
+    expect(saved.body.kit.flashcards[0].meta.edited).toBe(true);
+  });
   it('persists confidence and invalidates a logged-out session', async () => {
     const rated = await request(app)
       .post('/api/kits/example/practice')

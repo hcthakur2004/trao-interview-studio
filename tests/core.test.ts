@@ -98,6 +98,49 @@ describe('regeneration merge', () => {
     expect(result.schedule.days.flatMap((d) => d.question_ids)).not.toContain('q1');
     expect(validateKit(result)).toBeDefined();
   });
+  it('updates generated cards and removes deleted question time during regeneration', () => {
+    const kit = exampleKit().kit;
+    kit.schedule = allocateSchedule(kit.role.requirements, kit.questions, 1);
+    const oldPrompt = kit.questions[0].prompt;
+    const result = mergeCategory(kit, 'technical', [
+      {
+        ...kit.questions[0],
+        id: 'replacement',
+        prompt: 'Replacement technical prompt',
+        answer_outline: 'Replacement outline',
+        requirement_ids: ['r1', 'r3'],
+      },
+    ]);
+    expect(result.flashcards.some((card) => card.front === oldPrompt)).toBe(false);
+    expect(
+      result.flashcards.some(
+        (card) =>
+          card.front === 'Replacement technical prompt' && card.back === 'Replacement outline',
+      ),
+    ).toBe(true);
+    expect(result.schedule.days[0].minutes).toBe(
+      result.questions.reduce((sum, question) => sum + question.difficulty * 10, 0),
+    );
+    expect(validateKit(result)).toBeDefined();
+  });
+  it('preserves a user-edited flashcard while regenerating its question', () => {
+    const kit = exampleKit().kit;
+    const card = kit.flashcards[0];
+    card.front = 'My own study prompt';
+    card.meta = { origin: 'generated', edited: true, pinned: false };
+    const result = mergeCategory(kit, 'technical', [
+      {
+        ...kit.questions[0],
+        id: 'replacement',
+        prompt: 'New prompt',
+        requirement_ids: ['r1', 'r3'],
+      },
+    ]);
+    expect(
+      result.flashcards.some((item) => item.id === card.id && item.front === 'My own study prompt'),
+    ).toBe(true);
+    expect(result.flashcards.some((item) => item.front === 'New prompt')).toBe(true);
+  });
   it('does not restore explicitly deleted prompts', () => {
     const kit = exampleKit().kit;
     kit.deleted_prompts.push('Do not restore');

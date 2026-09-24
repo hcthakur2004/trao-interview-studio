@@ -2,6 +2,8 @@
 
 A researched, editable interview preparation workspace. Paste a job description, supply a company website and choose a timeline. The application extracts evidenced requirements, discovers company/hiring pages, searches public interview discussion, generates category-specific questions, repairs coverage gaps and builds a deterministic schedule.
 
+Source: [GitHub repository](https://github.com/hcthakur2004/trao-interview-studio). Public app: [interview-studio](https://interview-studio-sxvl.onrender.com). The free hosting tier may need a cold start after inactivity.
+
 The builder preserves user work during regeneration. Practice sessions prioritize unseen and lower-confidence flashcards. The readiness view connects each requirement to its JD evidence, questions and self-reported confidence.
 
 ## Run locally
@@ -129,7 +131,7 @@ npm run build
 
 Tests cover schema/reference integrity; 1/5/7/60-day schedules; priority ordering; honest empty extraction; real second-pass orchestration with an injected deterministic model; unrepairable coverage; nested relative hiring discovery; robots exclusions; unsafe addresses/types/sizes; protected regeneration; ownership isolation; stale writes; confidence persistence; and logout.
 
-Injected test models are used only in tests. Live verification with Gemini, Tavily and Atlas is recorded in `docs/VERIFICATION.md`, including the five-case benchmark and real browser editing. Public deployment remains to be verified separately.
+Injected test models are used only in tests. Live verification with Gemini, Tavily and Atlas is recorded in `docs/VERIFICATION.md`, including the five-case benchmark, real browser editing and public Render deployment.
 
 ## Production deployment
 
@@ -139,4 +141,4 @@ For a Node web-service host, use Node 22+, build command `npm ci && npm run buil
 
 ## Submission
 
-See `docs/SUBMISSION_CHECKLIST.md` and `docs/WALKTHROUGH.md`. The supplied email and PDF disagree on late submissions; plan around the PDF's stricter four-day deadline. Do not submit the sample kit as proof of live generation.
+See `docs/SUBMISSION_CHECKLIST.md`, `docs/DEPLOYMENT.md` and `docs/WALKTHROUGH.md`. The supplied email and PDF disagree on late submissions; plan around the PDF's stricter four-day deadline. Do not submit the sample kit as proof of live generation.

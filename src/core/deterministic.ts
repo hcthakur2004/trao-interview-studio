@@ -1,4 +1,10 @@
+import { createHash } from 'node:crypto';
 import type { Flashcard, Kit, Practice, Question, Requirement } from './contracts';
+
+export const cardIdForQuestion = (questionId: string) =>
+  `f_${createHash('sha256').update(questionId).digest('hex').slice(0, 12)}`;
+const cardIsProtected = (card: Flashcard) =>
+  card.meta?.origin === 'manual' || card.meta?.edited || card.meta?.pinned;
 
 export function coverage(requirements: Requirement[], questions: Question[]) {
   const covered = new Set(
@@ -62,6 +68,7 @@ export const isProtected = (q: Question) =>
 export function mergeCategory(kit: Kit, category: Question['category'], incoming: Question[]): Kit {
   const next = structuredClone(kit);
   const protectedQuestions = kit.questions.filter((q) => q.category === category && isProtected(q));
+  const replacedQuestions = kit.questions.filter((q) => q.category === category && !isProtected(q));
   const normalize = (s: string) => s.toLowerCase().replace(/\s+/g, ' ').trim();
   const excluded = new Set(
     [...protectedQuestions.map((q) => q.prompt), ...kit.deleted_prompts].map(normalize),
@@ -74,11 +81,57 @@ export function mergeCategory(kit: Kit, category: Question['category'], incoming
     0,
     ...replacements,
   );
-  return reconcileKit(next);
+  next.flashcards = next.flashcards.filter(
+    (card) =>
+      cardIsProtected(card) ||
+      !replacedQuestions.some(
+        (question) =>
+          card.id === cardIdForQuestion(question.id) ||
+          (card.front === question.prompt && card.back === question.answer_outline),
+      ),
+  );
+  for (const question of next.questions.filter((q) => q.category === category)) {
+    const id = cardIdForQuestion(question.id);
+    const card = next.flashcards.find(
+      (item) =>
+        item.id === id || (item.front === question.prompt && item.back === question.answer_outline),
+    );
+    if (card && !cardIsProtected(card)) {
+      card.front = question.prompt;
+      card.back = question.answer_outline;
+      card.requirement_ids = [...question.requirement_ids];
+    } else if (!card && replacements.some((item) => item.id === question.id)) {
+      next.flashcards.push({
+        id,
+        front: question.prompt,
+        back: question.answer_outline,
+        requirement_ids: [...question.requirement_ids],
+        meta: { origin: 'generated', edited: false, pinned: false },
+      });
+    }
+  }
+  return reconcileKit(next, kit);
 }
-export function reconcileKit(kit: Kit): Kit {
+export function reconcileKit(kit: Kit, previous?: Kit): Kit {
   const next = structuredClone(kit);
   next.coverage.uncovered_requirement_ids = coverage(next.role.requirements, next.questions);
+  if (previous) {
+    const before = new Map(previous.questions.map((q) => [q.id, q]));
+    const after = new Map(next.questions.map((q) => [q.id, q]));
+    const oldActiveDays = Math.min(previous.schedule.days_available, previous.questions.length);
+    next.schedule.days.forEach((day, index) => {
+      const oldDay = previous.schedule.days[index];
+      if (!oldDay || day.minutes !== oldDay.minutes) return; // Respect a direct duration edit.
+      const unit = index >= oldActiveDays ? 5 : 10;
+      const removed = oldDay.question_ids
+        .filter((id) => !day.question_ids.includes(id) || !after.has(id))
+        .reduce((sum, id) => sum + (before.get(id)?.difficulty ?? 0) * unit, 0);
+      const added = day.question_ids
+        .filter((id) => !oldDay.question_ids.includes(id) && after.has(id))
+        .reduce((sum, id) => sum + (after.get(id)?.difficulty ?? 0) * 10, 0);
+      day.minutes = Math.max(0, day.minutes - removed + added);
+    });
+  }
   const valid = new Set(next.questions.map((q) => q.id));
   next.schedule.days.forEach((d) => {
     d.question_ids = d.question_ids.filter((id) => valid.has(id));

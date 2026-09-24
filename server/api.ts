@@ -190,7 +190,23 @@ export function createApi(
           .map((q) => q.prompt),
       ]),
     ];
-    const kit = validateKit(reconcileKit(input.kit), false);
+    input.kit.flashcards = input.kit.flashcards.map((card) => {
+      const old = record.kit.flashcards.find((item) => item.id === card.id);
+      return {
+        ...card,
+        meta: {
+          origin: old?.meta?.origin || (old ? 'generated' : 'manual'),
+          edited: Boolean(
+            old?.meta?.edited ||
+            !old ||
+            JSON.stringify({ ...old, meta: undefined }) !==
+              JSON.stringify({ ...card, meta: undefined }),
+          ),
+          pinned: Boolean(old?.meta?.pinned || card.meta?.pinned),
+        },
+      };
+    });
+    const kit = validateKit(reconcileKit(input.kit, record.kit), false);
     const next = {
       ...record,
       kit,
@@ -298,6 +314,11 @@ export function createApi(
       const next = {
         ...record,
         kit,
+        practice: Object.fromEntries(
+          Object.entries(record.practice).filter(([id]) =>
+            kit.flashcards.some((card) => card.id === id),
+          ),
+        ),
         revision: record.revision + 1,
         updated_at: new Date().toISOString(),
       };

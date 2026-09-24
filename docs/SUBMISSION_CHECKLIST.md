@@ -9,10 +9,10 @@
 - [x] Edit and pin questions, regenerate their category, verify preservation and no dangling schedule IDs.
 - [ ] Test slow generation, retry, restart/resume and duplicate submission.
 - [ ] Verify keyboard-only editing, mobile layout, and visible save failures.
-- [ ] Deploy the full Node application with MongoDB and HTTPS. Verify the public frontend and API end to end.
-- [ ] Create the GitHub repository and push genuine development commits. Exclude PDF/email, secrets, local data, caches and build output.
+- [x] Deploy the full Node application with MongoDB and HTTPS. Verify public registration, real generation, question edit, pin, regeneration and reload.
+- [x] Create the GitHub repository and push genuine development commits. Exclude PDF/email, secrets, local data, caches and build output.
 - [ ] Record a 3–4 minute walkthrough with the candidate explaining one design decision and trade-off.
-- [ ] Add the real deployment/video URLs to the README.
+- [ ] Add the real video URL to the README (public app URL is already there).
 - [ ] Submit repository, deployment and video links through the supplied form, ideally on 25 September.
 
-Do not state that external services, public deployment, or live throughput have been verified until they have actually been exercised.
+Public flashcard/schedule synchronization awaits the final deployed build check. Do not mark remaining manual checks complete until exercised.
