@@ -1,0 +1,9 @@
+node_modules
+.next
+.npm-cache
+.data
+tmp
+output
+package-lock.json
+next-env.d.ts
+IMPLEMENTATION_PLAN.md

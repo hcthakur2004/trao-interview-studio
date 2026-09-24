@@ -1,0 +1,14 @@
+node_modules/
+.npm-cache/
+.next/
+.env
+.env.*
+!.env.example
+.data/
+tmp/
+output/
+coverage/
+*.tsbuildinfo
+*.log
+software-engineer-assignment.pdf
+.DS_Store

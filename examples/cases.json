@@ -1,0 +1,7 @@
+[
+  { "id": "frontend", "jd": "Senior Frontend Engineer\nRequired: strong React and TypeScript experience. Build accessible interfaces. Measure and improve web performance. Mentor junior engineers. Bonus: experience with developer tools.", "company_url": "https://posthog.com", "days": 5 },
+  { "id": "backend", "jd": "Backend Engineer\nMust have Node.js and PostgreSQL experience. Design distributed systems and reliable APIs. Required: communicate technical trade-offs clearly. Nice to have: Kubernetes.", "company_url": "https://about.gitlab.com", "days": 7 },
+  { "id": "thin", "jd": "Software engineer wanted.\nHelp us build useful software.", "company_url": "http://localhost:8099/quiet/", "days": 1 },
+  { "id": "no-hiring", "jd": "Data Engineer\nRequired: Python, SQL, and building data pipelines. Bonus: retail domain experience.", "company_url": "http://localhost:8099/quiet/", "days": 60 },
+  { "id": "nested-hiring", "jd": "Full-stack Engineer\nRequired: React and Node.js. Design scalable systems. Collaborate with product managers. Preferred: experience with developer tools.", "company_url": "http://localhost:8099/acme/", "days": 4 }
+]
