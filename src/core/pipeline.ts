@@ -16,7 +16,7 @@ import { allocateSchedule, coverage } from './deterministic';
 import { GeminiModel, PipelineError, type Model } from './llm';
 import { crawlCompany, searchDiscussion } from './retrieval';
 
-export const PIPELINE_VERSION = '1.0';
+export const PIPELINE_VERSION = '1.1';
 export function fingerprint(input: InputCase) {
   return createHash('sha256')
     .update(
@@ -126,7 +126,7 @@ export async function runPipeline(raw: InputCase, options: PipelineOptions = {})
   let extracted = checkpoint.extracted;
   if (!extracted) {
     const output = await model.json(
-      'Extract the role and ALL explicitly stated job requirements. Separate technical, behavioural and domain requirements. Required/essential qualifications are must; bonus/preferred/desirable are nice. Preserve explicit alternatives as one requirement. Never infer unstated technologies, years, seniority, location or company. Each requirement MUST include an exact contiguous evidence quote from the original JD. A two-line stub should yield few or no requirements. Responsibilities may imply a requirement only when explicitly stated in the JD. Unknown values are empty strings.',
+      'Extract the role and ALL explicitly stated skills, qualifications AND concrete duties as preparation requirements. A concrete duty belongs BOTH in responsibilities and requirements: e.g. "Mentor junior engineers" is a behavioural must, "Design scalable systems" is a technical must, and "Build accessible interfaces" is a technical must. Do not omit duties just because they lack the word required. Vague generic duties such as "help build useful software" do not establish specific requirements. Separate technical, behavioural and domain requirements. Required/essential qualifications and concrete duties are must; bonus/preferred/desirable are nice. Split independent skills when appropriate but preserve explicit OR alternatives as one requirement. Never infer unstated technologies, years, seniority, location or company. Each requirement MUST include an exact contiguous evidence quote from the original JD. A two-line stub should yield few or no requirements. Before returning, check every JD sentence for a concrete duty or qualification that is missing from requirements. Unknown values are empty strings.',
       { jd: input.jd },
       Extracted,
       signal,

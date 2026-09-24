@@ -87,9 +87,14 @@ export class GeminiModel implements Model {
         nextAllowed = Date.now() + Number(process.env.LLM_MIN_INTERVAL_MS || 4500);
         tokens.push({ at: Date.now(), amount: estimate });
         try {
-          const jsonSchema = z.toJSONSchema(schema, { target: 'draft-7' });
+          // Large string/array upper bounds exceed Gemini's constrained-decoding
+          // schema budget. Keep them in authoritative local Zod validation.
+          const jsonSchema = JSON.parse(
+            JSON.stringify(z.toJSONSchema(schema, { target: 'draft-7' })),
+            (key, value) => (['maxLength', 'maxItems'].includes(key) ? undefined : value),
+          );
           const response = await fetch(
-            `https://generativelanguage.googleapis.com/v1beta/models/${encodeURIComponent(process.env.GEMINI_MODEL || 'gemini-2.5-flash-lite')}:generateContent`,
+            `https://generativelanguage.googleapis.com/v1beta/models/${encodeURIComponent(process.env.GEMINI_MODEL || 'gemini-3.5-flash-lite')}:generateContent`,
             {
               method: 'POST',
               signal: AbortSignal.any([signal, AbortSignal.timeout(40000)]),
@@ -130,6 +135,15 @@ export class GeminiModel implements Model {
           if (signal.aborted) throw signal.reason;
           if (error instanceof PipelineError) throw error;
           lastError = error instanceof Error ? error.message : 'Invalid JSON';
+          if (error instanceof TypeError && /fetch failed/i.test(error.message)) {
+            if (attempt === 2)
+              throw new PipelineError(
+                'PROVIDER_UNAVAILABLE',
+                'Could not reach the model provider.',
+              );
+            await delay(retryDelay(null, attempt), signal);
+            continue;
+          }
           if (attempt === 2)
             throw new PipelineError(
               'INVALID_MODEL_OUTPUT',

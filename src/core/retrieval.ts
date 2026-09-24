@@ -109,7 +109,7 @@ export async function safeFetch(
           reject(new Error(`Unsupported content type: ${contentType}`));
           return;
         }
-        const cap = options.maxBytes ?? 1_000_000;
+        const cap = options.maxBytes ?? 2_000_000;
         if (Number(response.headers['content-length']) > cap) {
           response.destroy();
           reject(new Error('Page exceeds size limit'));
@@ -318,6 +318,12 @@ export async function searchDiscussion(
   hostname: string,
   signal: AbortSignal,
 ): Promise<{ sources: string[]; summary: string; warning?: string }> {
+  if (!company && (!hostname || hostname === 'localhost' || /^(?:127\.|\[?::1\]?$)/.test(hostname)))
+    return {
+      sources: [],
+      summary: '',
+      warning: 'Public discussion search skipped: no identifiable public company was supplied.',
+    };
   if (!process.env.TAVILY_API_KEY)
     return {
       sources: [],

@@ -1,12 +1,12 @@
 # Before submission
 
-- [ ] Configure Gemini, Tavily and MongoDB; never commit secrets.
+- [x] Configure Gemini, Tavily and MongoDB locally; never commit secrets.
 - [ ] Run `npm ci`, typecheck, tests and production build from a clean clone.
-- [ ] Run all five diverse cases with the real provider; verify successful completion under 15 minutes, schema correctness, requirement accuracy and source honesty.
-- [ ] Inspect a two-line JD and a site with no hiring page.
-- [ ] Confirm an actual coverage repair in the trace; use the clearly identified test fixture if demonstrating a forced omission.
-- [ ] Verify user A cannot read/edit user B's kit.
-- [ ] Edit and pin questions, regenerate their category, verify preservation and no dangling schedule IDs.
+- [x] Run all five diverse cases with the real provider; verify successful completion under 15 minutes, schema correctness, requirement accuracy and source honesty (183.669 seconds).
+- [x] Inspect a two-line JD and a site with no hiring page.
+- [x] Confirm coverage repair with the clearly identified deterministic test fixture. The live outputs completed in one pass and are not represented as repaired.
+- [x] Verify user A cannot read/edit user B's kit.
+- [x] Edit and pin questions, regenerate their category, verify preservation and no dangling schedule IDs.
 - [ ] Test slow generation, retry, restart/resume and duplicate submission.
 - [ ] Verify keyboard-only editing, mobile layout, and visible save failures.
 - [ ] Deploy the full Node application with MongoDB and HTTPS. Verify the public frontend and API end to end.

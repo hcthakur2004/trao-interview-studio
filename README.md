@@ -27,7 +27,7 @@ Never put credentials in chat, source control or browser code. Put them in the i
 | Variable              | Purpose                                                                                   |
 | --------------------- | ----------------------------------------------------------------------------------------- |
 | GEMINI_API_KEY        | Server-only key from Google AI Studio                                                     |
-| GEMINI_MODEL          | Defaults to `gemini-2.5-flash-lite`; verify model availability and your account quota     |
+| GEMINI_MODEL          | Defaults to `gemini-3.5-flash-lite`; verify model availability and your account quota     |
 | TAVILY_API_KEY        | Public discussion search; one basic query per kit                                         |
 | MONGODB_URI           | Required production persistence connection                                                |
 | MONGODB_DATABASE      | Database name, default `trao_interview_studio`                                            |
@@ -39,7 +39,7 @@ Never put credentials in chat, source control or browser code. Put them in the i
 | EVALUATE_ALLOW_LOCAL  | CLI-only local fixture access; defaults true in evaluation, ignored by web fetches        |
 | TRUST_PROXY           | Set to `1` only behind one trusted reverse proxy; otherwise leave `0`                     |
 
-Verified provider documentation on 23 September 2026: [Gemini pricing](https://ai.google.dev/gemini-api/docs/pricing) lists a free tier for Gemini 2.5 Flash-Lite; [Gemini quotas](https://ai.google.dev/gemini-api/docs/rate-limits) depend on the account/model. [Tavily](https://docs.tavily.com/documentation/api-credits) documents 1,000 free monthly credits without a credit card. These are external policies, not guarantees made by this application. Keep billing disabled if only using free tiers. Review provider data-use terms before submitting confidential job descriptions.
+Verified provider documentation on 23 September 2026: [Gemini pricing](https://ai.google.dev/gemini-api/docs/pricing) lists a free tier for Gemini 3.5 Flash-Lite; [Gemini quotas](https://ai.google.dev/gemini-api/docs/rate-limits) depend on the account/model. [Tavily](https://docs.tavily.com/documentation/api-credits) documents 1,000 free monthly credits without a credit card. These are external policies, not guarantees made by this application. Keep billing disabled if only using free tiers. Review provider data-use terms before submitting confidential job descriptions.
 
 ## Exact batch entry point
 
@@ -129,7 +129,7 @@ npm run build
 
 Tests cover schema/reference integrity; 1/5/7/60-day schedules; priority ordering; honest empty extraction; real second-pass orchestration with an injected deterministic model; unrepairable coverage; nested relative hiring discovery; robots exclusions; unsafe addresses/types/sizes; protected regeneration; ownership isolation; stale writes; confidence persistence; and logout.
 
-Injected test models are used only in tests. They do not certify external model quality or replace a real-provider evaluation. The live five-case benchmark, Atlas connection and public deployment must be verified after credentials and accounts are configured.
+Injected test models are used only in tests. Live verification with Gemini, Tavily and Atlas is recorded in `docs/VERIFICATION.md`, including the five-case benchmark and real browser editing. Public deployment remains to be verified separately.
 
 ## Production deployment
 
