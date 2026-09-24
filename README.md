@@ -139,6 +139,4 @@ The supplied Dockerfile builds and runs the complete frontend/backend in one con
 
 For a Node web-service host, use Node 22+, build command `npm ci && npm run build`, and start command `npm start`. Configure `APP_ORIGIN` to its final HTTPS URL. Keep one instance. Free hosts may sleep; durable jobs resume when the process restarts, but the user's generation can be delayed. Check current plan limits and verify a complete generation on the public deployment before submitting.
 
-## Submission
 
-See `docs/SUBMISSION_CHECKLIST.md`, `docs/DEPLOYMENT.md` and `docs/WALKTHROUGH.md`. The supplied email and PDF disagree on late submissions; plan around the PDF's stricter four-day deadline. Do not submit the sample kit as proof of live generation.
